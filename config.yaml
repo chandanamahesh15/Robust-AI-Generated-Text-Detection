@@ -1,0 +1,25 @@
+seed: 42
+
+data:
+  text_column: text
+  label_column: generated
+  test_size: 0.15
+  validation_size: 0.15
+
+models:
+  tfidf:
+    max_features: 10000
+    ngram_range: [1, 2]
+
+  lstm:
+    max_vocab: 20000
+    max_len: 256
+    embedding_dim: 128
+    batch_size: 64
+    epochs: 5
+
+  transformer:
+    max_len: 128
+    batch_size: 16
+    epochs: 2
+    learning_rate: 0.00002

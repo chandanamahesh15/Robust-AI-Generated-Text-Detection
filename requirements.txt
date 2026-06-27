@@ -10,3 +10,8 @@ datasets
 accelerate
 sentencepiece
 wordcloud
+fastapi
+uvicorn
+pydantic
+joblib
+mlflow
