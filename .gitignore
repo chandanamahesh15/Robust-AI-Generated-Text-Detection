@@ -21,3 +21,4 @@ artifacts/*.joblib
 
 # Large dataset — download from Kaggle, never commit
 data/raw/*.zip
+*.egg-info/
