@@ -1,0 +1,10 @@
+# Heavy, GPU-oriented dependencies for the RESEARCH track only
+# (BiLSTM, BERT/RoBERTa fine-tuning, Qwen embeddings).
+# Kept OUT of requirements.txt so the serving container stays small.
+#   pip install -r requirements.txt -r requirements-research.txt
+tensorflow>=2.15
+torch>=2.2
+transformers>=4.40
+datasets>=2.18
+accelerate>=0.29
+sentencepiece>=0.2

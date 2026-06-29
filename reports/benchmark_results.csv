@@ -1,0 +1,17 @@
+model,split,accuracy,precision,recall,f1
+Majority Class Baseline,validation,0.6276,0.0,0.0,0.0
+Stratified Baseline,validation,0.5347,0.3751,0.3747,0.3749
+TF-IDF + LogReg,validation,0.9957,0.997,0.9915,0.9942
+TF-IDF + LogReg,test,0.9959,0.9976,0.9914,0.9945
+BiLSTM (scratch embed),validation,0.9987,0.9989,0.9976,0.9983
+BiLSTM (scratch embed),test,0.9983,0.9983,0.9971,0.9977
+BERT (fine-tuned),validation,0.9872,0.9712,0.9945,0.9827
+BERT (fine-tuned),test,0.9866,0.9716,0.993,0.9822
+RoBERTa (fine-tuned),validation,0.9874,0.9702,0.9962,0.983
+RoBERTa (fine-tuned),test,0.9884,0.9742,0.9952,0.9846
+Qwen2.5-0.5B + LR (frozen),validation,0.989,0.9842,0.9858,0.985
+Qwen2.5-0.5B + LR (frozen),test,0.989,0.9876,0.9828,0.9852
+TF-IDF + LogReg,external,0.8917,0.8961,0.981,0.9366
+BERT (fine-tuned),external,0.8697,0.8658,0.9944,0.9257
+BiLSTM (scratch embed),external,0.8438,0.9111,0.8959,0.9034
+RoBERTa (fine-tuned),external,0.8241,0.8228,0.9996,0.9026

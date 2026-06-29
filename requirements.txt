@@ -1,17 +1,17 @@
-numpy
-pandas
-matplotlib
-seaborn
-scikit-learn
-tensorflow
-torch
-transformers
-datasets
-accelerate
-sentencepiece
-wordcloud
-fastapi
-uvicorn
-pydantic
-joblib
-mlflow
+# Core dependencies — training the deployable model + serving the API.
+# Pinned with >= floors for reproducibility; lock exact versions for prod.
+numpy>=1.26
+pandas>=2.0
+scikit-learn>=1.4
+pyyaml>=6.0
+joblib>=1.3
+
+# Serving
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+
+# EDA / plotting (used by notebooks + optional confusion-matrix plots)
+matplotlib>=3.8
+seaborn>=0.13
+wordcloud>=1.9

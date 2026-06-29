@@ -1,0 +1,81 @@
+# ======================================================================
+# Central configuration for the AI-vs-Human text detection pipeline.
+# Override any value at runtime with --config <path> or env vars (see README).
+# Nothing in src/ should hardcode a path, column name, or hyperparameter.
+# ======================================================================
+
+project:
+  name: "ai-vs-human-text-detection"
+  seed: 42
+
+data:
+  # Source archive shipped with the repo; extracted on first run.
+  zip_path: "data/raw/AI_Human.csv.zip"
+  extract_dir: "data/extracted"
+  csv_name: "AI_Human.csv"
+  text_col: "text"
+  label_col: "generated"        # 0 = human, 1 = AI
+  drop_duplicates: true
+  min_word_count: 0             # set >0 to filter very short texts
+
+split:
+  test_size: 0.30               # first split: train vs (val+test)
+  val_test_ratio: 0.50          # second split: half of the 30% -> val, half -> test
+  stratify: true
+
+preprocessing:
+  lowercase: true
+  strip_urls: true
+  strip_html: true
+  letters_only: true            # keep [a-zA-Z\s] only (used by TF-IDF + BiLSTM)
+
+# ---- Deployable model (the one app/main.py serves) -------------------
+tfidf:
+  max_features: 10000
+  ngram_min: 1
+  ngram_max: 2
+  min_df: 2
+  logreg_c: 1.0
+  max_iter: 1000
+
+# ---- Research models (optional, GPU-bound; not on the serving path) --
+bilstm:
+  max_vocab: 20000
+  max_len: 256
+  embed_dim: 128
+  batch_size: 64
+  epochs: 5
+  patience: 2
+
+transformer:
+  models: ["bert-base-uncased", "roberta-base"]
+  max_len: 128
+  batch_size: 16
+  epochs: 2
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  # Fine-tuning on the full set is slow; cap for feasibility. null = full data.
+  n_finetune: 20000
+
+qwen:
+  model_name: "Qwen/Qwen2.5-0.5B"
+  max_len: 256
+  batch_size: 8
+  logreg_c: 1.0
+  max_iter: 1000
+
+external_validation:
+  hf_dataset: "gsingh1-py/train"
+  human_col: "Human_story"
+  ai_cols: ["gemma-2-9b", "mistral-7B", "qwen-2-72B", "llama-8B", "yi-large", "gpt_4-o"]
+  min_word_count: 50
+
+artifacts:
+  dir: "artifacts"
+  model_file: "tfidf_logreg_model.joblib"
+  vectorizer_file: "tfidf_vectorizer.joblib"
+  metrics_file: "tfidf_metrics.csv"
+
+logging:
+  level: "INFO"                 # DEBUG | INFO | WARNING | ERROR
+  format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"

@@ -1,19 +1,23 @@
 __pycache__/
-*.pyc
-.ipynb_checkpoints/
-
-.env
-venv/
+*.py[cod]
 .venv/
+venv/
+.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-data/
-models/
-*.pkl
-*.joblib
-*.h5
-*.pt
-*.bin
-*.zip
-*.csv
+# Data & artifacts (regenerate via the pipeline; keep the source zip if small)
+data/extracted/
+artifacts/*.joblib
+*.ipynb_checkpoints
 
-artifacts/confusion_matrices/
+# Keep these tracked:
+!artifacts/.gitkeep
+!data/raw/.gitkeep
+.DS_Store
+
+# Large dataset — download from Kaggle, never commit
+data/raw/*.zip

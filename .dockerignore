@@ -1,0 +1,27 @@
+# Keep the build context (and image) small.
+.git
+.github
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+notebooks/
+tests/
+reports/
+data/
+requirements-research.txt
+src/models/bilstm.py
+src/models/transformer.py
+src/models/qwen_features.py
+src/benchmark.py
+src/external_validation.py
+*.md
+!README.md
+.env
+.env.example
