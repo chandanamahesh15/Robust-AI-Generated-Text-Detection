@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 import pandas as pd
+from numpy.typing import ArrayLike
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -29,8 +30,8 @@ logger = get_logger(__name__)
 
 
 def compute_metrics(
-    y_true: Sequence[int],
-    y_pred: Sequence[int],
+    y_true: ArrayLike,
+    y_pred: ArrayLike,
     model_name: str,
     split: str = "validation",
 ) -> dict[str, Any]:
@@ -52,8 +53,8 @@ def compute_metrics(
 
 
 def classification_text_report(
-    y_true: Sequence[int],
-    y_pred: Sequence[int],
+    y_true: ArrayLike,
+    y_pred: ArrayLike,
     target_names: Sequence[str] = ("Human", "AI"),
 ) -> str:
     """Return sklearn's text report (logged by callers, not printed here)."""
@@ -71,8 +72,8 @@ def save_metrics(rows: list[dict[str, Any]], path: str | Path) -> pd.DataFrame:
 
 
 def plot_confusion_matrix(
-    y_true: Sequence[int],
-    y_pred: Sequence[int],
+    y_true: ArrayLike,
+    y_pred: ArrayLike,
     model_name: str,
     target_names: Sequence[str] = ("Human", "AI"),
 ):  # pragma: no cover - presentation only

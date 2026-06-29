@@ -11,7 +11,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
-from typing import Any, get_type_hints
+from typing import Any, cast, get_type_hints
 
 import yaml
 
@@ -100,7 +100,7 @@ class Config:
     external_validation: dict[str, Any] = field(default_factory=dict)
 
 
-def _build(cls: type, data: dict[str, Any]) -> Any:
+def _build(cls: type[Any], data: dict[str, Any]) -> Any:
     """Recursively instantiate a dataclass from a dict, ignoring unknown keys."""
     if not is_dataclass(cls):
         return data
@@ -111,11 +111,13 @@ def _build(cls: type, data: dict[str, Any]) -> Any:
         if f.name not in data:
             continue
         ftype = hints.get(f.name, f.type)
-        if is_dataclass(ftype):
-            kwargs[f.name] = _build(ftype, data[f.name])
+        # ftype from get_type_hints is always a class for dataclass fields; the
+        # cast tells mypy what is_dataclass's TypeGuard can't express.
+        if isinstance(ftype, type) and is_dataclass(ftype):
+            kwargs[f.name] = _build(cast("type[Any]", ftype), data[f.name])
         else:
             kwargs[f.name] = data[f.name]
-    return cls(**kwargs)
+    return cast("type[Any]", cls)(**kwargs)
 
 
 def _apply_env_overrides(raw: dict[str, Any]) -> dict[str, Any]:

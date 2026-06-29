@@ -17,27 +17,30 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from src.config import load_config
+from src.config import Config, load_config
 from src.data import clean_text
 from src.logging_utils import configure_logging, get_logger
 from src.models.tfidf import TfidfLogRegModel
 
 logger = get_logger(__name__)
 
-# Populated at startup; kept in module state so we load the model only once.
-_state: dict[str, object] = {}
+# Module-level state, loaded once at startup. Typed explicitly so the request
+# handlers stay fully type-checked (no `# type: ignore` needed).
+_cfg: Optional[Config] = None
+_model: Optional[TfidfLogRegModel] = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    cfg = load_config()
-    configure_logging(cfg.logging.level, cfg.logging.format)
+    global _cfg, _model
+    _cfg = load_config()
+    configure_logging(_cfg.logging.level, _cfg.logging.format)
     logger.info("Loading model artifacts...")
-    _state["cfg"] = cfg
-    _state["model"] = TfidfLogRegModel.load(cfg)
+    _model = TfidfLogRegModel.load(_cfg)
     logger.info("Service ready.")
     yield
-    _state.clear()
+    _model = None
+    _cfg = None
 
 
 app = FastAPI(
@@ -64,23 +67,24 @@ class PredictResponse(BaseModel):
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "model_loaded": str("model" in _state)}
+    return {"status": "ok", "model_loaded": str(_model is not None)}
 
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(req: PredictRequest) -> PredictResponse:
-    model = _state.get("model")
-    cfg = _state.get("cfg")
-    if model is None or cfg is None:
+    if _model is None or _cfg is None:
         raise HTTPException(status_code=503, detail="Model not loaded.")
 
-    raw_texts = req.texts if req.texts is not None else ([req.text] if req.text else None)
-    if not raw_texts:
+    if req.texts is not None:
+        raw_texts: list[str] = req.texts
+    elif req.text:
+        raw_texts = [req.text]
+    else:
         raise HTTPException(status_code=422, detail="Provide 'text' or 'texts'.")
 
-    cleaned = [clean_text(t, cfg) for t in raw_texts]  # type: ignore[arg-type]
-    labels = model.predict(cleaned)  # type: ignore[attr-defined]
-    probs = model.predict_proba(cleaned)  # type: ignore[attr-defined]
+    cleaned = [clean_text(t, _cfg) for t in raw_texts]
+    labels = _model.predict(cleaned)
+    probs = _model.predict_proba(cleaned)
 
     return PredictResponse(
         predictions=[
