@@ -1,6 +1,6 @@
 # AI vs Human Text Detection
 
-[![CI](https://github.com/<your-username>/AI-VS-HUMAN-TEXT-DETECTION/actions/workflows/ci.yml/badge.svg)](https://github.com/<your-username>/AI-VS-HUMAN-TEXT-DETECTION/actions/workflows/ci.yml)
+[![CI](https://github.com/chandanamahesh15/Robust-AI-Generated-Text-Detection/actions/workflows/ci.yml/badge.svg)](https://github.com/chandanamahesh15/Robust-AI-Generated-Text-Detection/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
@@ -112,8 +112,8 @@ default — and the heavy models stay in the repo as the benchmark that proves i
 Requires Python 3.10+.
 
 ```bash
-git clone <your-repo-url>
-cd AI-VS-HUMAN-TEXT-DETECTION
+git clone https://github.com/chandanamahesh15/Robust-AI-Generated-Text-Detection.git
+cd Robust-AI-Generated-Text-Detection
 
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 
@@ -125,8 +125,24 @@ pip install -e ".[dev,viz]"
 pip install -e ".[research]"
 ```
 
-Place the dataset archive at `data/raw/AI_Human.csv.zip` (the CSV needs a `text`
-column and a binary `generated` column where 0 = human, 1 = AI).
+### Dataset
+
+The model is trained on the **[AI Vs Human Text](https://www.kaggle.com/datasets/shanegerami/ai-vs-human-text)**
+dataset from Kaggle (~500K essays labelled human vs. AI). It is **not committed
+to this repo** — at ~344 MB it exceeds GitHub's file limit, and large data
+doesn't belong in version control.
+
+To train from scratch, download it from the link above and place the archive at:
+
+```
+data/raw/AI_Human.csv.zip
+```
+
+The CSV must contain a `text` column and a binary `generated` column (0 = human,
+1 = AI). The path and column names are configurable in `config/config.yaml`.
+
+> The repo ships with a pre-trained model in `artifacts/`, so you can run the API
+> **without** the dataset. You only need the data to retrain or re-run the benchmark.
 
 ---
 
